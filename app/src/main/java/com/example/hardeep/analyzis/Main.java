@@ -3,6 +3,7 @@ package com.example.hardeep.analyzis;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -81,9 +82,13 @@ public class Main extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.sessions) {
-            // Handle the camera action
+            SessionFragment sf = new SessionFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.main_layout_container, sf, sf.getTag()).commit();
         } else if (id == R.id.events) {
-
+            EventFragment ef = new EventFragment();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.main_layout_container, ef, ef.getTag()).commit();
         } else if (id == R.id.settings) {
 
         } else if (id == R.id.screenShot) {
