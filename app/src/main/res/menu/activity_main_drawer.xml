@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/sessions"
+            android:icon="@android:drawable/ic_menu_gallery"
+            android:title="Screen Sessions" />
+        <item
+            android:id="@+id/events"
+            android:icon="@android:drawable/ic_menu_agenda"
+            android:title="Action Events" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@android:drawable/ic_menu_manage"
+            android:title="Settings" />
+    </group>
+
+    <item android:title="Options">
+        <menu>
+            <item
+                android:id="@+id/screenShot"
+                android:icon="@android:drawable/ic_menu_camera"
+                android:title="Screenshot" />
+            <item
+                android:id="@+id/refresh"
+                android:icon="@android:drawable/ic_menu_recent_history"
+                android:title="Refresh" />
+        </menu>
+    </item>
+
+</menu>
