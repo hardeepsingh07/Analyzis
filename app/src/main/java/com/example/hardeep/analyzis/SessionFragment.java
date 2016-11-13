@@ -95,6 +95,7 @@ public class SessionFragment extends Fragment {
             }
         };
 
+        //Diable Axis
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
