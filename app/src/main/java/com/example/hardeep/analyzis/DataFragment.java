@@ -2,7 +2,6 @@ package com.example.hardeep.analyzis;
 
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -30,35 +29,44 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-
-public class EventFragment extends Fragment {
-
+public class DataFragment extends Fragment {
 
     public View view;
-    public PieChart pieChart;
     public LineChart lineChart;
-    public ListView nLV, dLV;
-    public FloatingActionButton eMin, eMax;
+    public PieChart pieChart;
+    public ListView dLV;
+    public ListAdapter lA;
+    public FloatingActionButton sMin, sMax;
     public SharedPreferences prefs;
     public String type;
     public int bound;
+    public HashMap<String, Integer> data;
 
     // Required empty public constructor
-    public EventFragment() {}
+    public DataFragment() {}
 
+    public void setData(HashMap<String, Integer> data) {
+        this.data = data;
+    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_event, container, false);
-        lineChart = (LineChart) view.findViewById(R.id.ef_line_chart);
-        pieChart = (PieChart) view.findViewById(R.id.ef_pie_chart);
-        dLV = (ListView) view.findViewById(R.id.ef_data_listview);
-        eMin = (FloatingActionButton) view.findViewById(R.id.ef_min_fab);
-        eMax = (FloatingActionButton) view.findViewById(R.id.ef_max_fab);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_data, container, false);
+        lineChart = (LineChart) view.findViewById(R.id.df_line_chart);
+        pieChart = (PieChart) view.findViewById(R.id.df_pie_chart);
+        dLV = (ListView) view.findViewById(R.id.df_data_listview);
+        lA = new ListAdapter(data);
+        dLV.setAdapter(lA);
 
+        //Buttons
+        sMin = (FloatingActionButton) view.findViewById(R.id.df_min_fab);
+        sMax = (FloatingActionButton) view.findViewById(R.id.df_max_fab);
+
+        //Preferences
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         type = prefs.getString("type", "line");
         bound = prefs.getInt("bound", 5);
@@ -79,11 +87,11 @@ public class EventFragment extends Fragment {
             pieChart.setVisibility(View.GONE);
         } else {
             List<PieEntry> pieValues = new ArrayList<>();
-            pieValues.add(new PieEntry(18.5f, "Screen1"));
-            pieValues.add(new PieEntry(26.7f, "Screen2"));
-            pieValues.add(new PieEntry(24.0f, "Screen3"));
-            pieValues.add(new PieEntry(30.8f, "Screen4"));
-            pieValues.add(new PieEntry(40.5f, "Screen5"));
+
+            //Iterate through hashMap to make PieDataList
+            for(Map.Entry<String, Integer> entry: data.entrySet()) {
+                 pieValues.add(new PieEntry((float)entry.getValue(), entry.getKey()));
+            }
 
             //Make the Graph
             createPieGraph(pieValues);
@@ -92,25 +100,28 @@ public class EventFragment extends Fragment {
             lineChart.setVisibility(View.GONE);
         }
 
-        eMin.setOnClickListener(new View.OnClickListener() {
+
+
+        sMin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity().getApplicationContext(), "Event Min", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Session Min", Toast.LENGTH_SHORT).show();
             }
         });
 
-        eMax.setOnClickListener(new View.OnClickListener() {
+        sMax.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity().getApplicationContext(), "Event Max", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "Session Max", Toast.LENGTH_SHORT).show();
             }
         });
 
         return view;
     }
+
     public void createLineGraph(List<Entry> values) {
         //Each line Data Set
-        LineDataSet lineDataSet = new LineDataSet(values, "Number of Events");
+        LineDataSet lineDataSet = new LineDataSet(values, "Number of Sessions");
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineDataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
         lineDataSet.setDrawCircles(true);
@@ -175,18 +186,25 @@ public class EventFragment extends Fragment {
         set.setValueTextSize(13f);
         set.setValueLineColor(getResources().getColor(R.color.colorIcons));
 
+        ArrayList<Integer> textColors = new ArrayList<Integer>();
+        textColors.add(getResources().getColor(R.color.colorIcons));
+
+        set.setValueTextColors(textColors);
+        set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
         ArrayList<Integer> colors = new ArrayList<Integer>();
         colors.add(getResources().getColor(R.color.colorAccent));
-        colors.add(getResources().getColor(R.color.colorPrimaryDark));
         colors.add(getResources().getColor(R.color.colorPrimaryLight));
         colors.add(getResources().getColor(R.color.colorSecondaryText));
         colors.add(getResources().getColor(R.color.colorDivider));
-        colors.add(ColorTemplate.getHoloBlue());
         set.setColors(colors);
+
 
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.setDrawHoleEnabled(false);
+        pieChart.setEntryLabelColor(getResources().getColor(R.color.colorPrimaryDark));
+        pieChart.setEntryLabelTextSize(15f);
         pieChart.invalidate();
 
 
@@ -195,4 +213,5 @@ public class EventFragment extends Fragment {
         ds.setText("");
         pieChart.setDescription(ds);
     }
+
 }

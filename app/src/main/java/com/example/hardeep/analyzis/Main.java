@@ -30,6 +30,9 @@ public class Main extends AppCompatActivity
     ActionBarDrawerToggle toggle;
     Toolbar toolbar;
 
+    HashMap<String, Integer> sessions;
+    HashMap<String, Integer> events;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +41,7 @@ public class Main extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-        HashMap<String, Integer> sessions = new HashMap<String, Integer>();
+        sessions = new HashMap<>();
         sessions.put("Main", 45);
         sessions.put("Second", 26);
         sessions.put("Third", 27);
@@ -52,7 +55,7 @@ public class Main extends AppCompatActivity
         sessions.put("Eleventh", 32);
 
 
-        HashMap<String, Integer> events = new HashMap<String, Integer>();
+        events = new HashMap<>();
         events.put("EMainE", 75);
         events.put("ESecondE", 66);
         events.put("EThirdE", 57);
@@ -92,13 +95,15 @@ public class Main extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.sessions) {
-            SessionFragment sf = new SessionFragment();
+            DataFragment df = new DataFragment();
+            df.setData(sessions);
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.main_layout_container, sf, sf.getTag()).commit();
+            fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
         } else if (id == R.id.events) {
-            EventFragment ef = new EventFragment();
+            DataFragment df = new DataFragment();
+            df.setData(events);
             FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.main_layout_container, ef, ef.getTag()).commit();
+            fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
         } else if (id == R.id.settings) {
             SettingsFragment sm = new SettingsFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -108,6 +113,7 @@ public class Main extends AppCompatActivity
                     == PackageManager.PERMISSION_GRANTED) {
                 drawer.closeDrawer(GravityCompat.START);
                 takeScreenShot();
+                drawer.setDrawerListener(null);
                 drawer.setDrawerListener(toggle);
                 return true;
             } else {
@@ -183,6 +189,6 @@ public class Main extends AppCompatActivity
                 super.onDrawerOpened(drawerView);
             }
         };
-        drawer.addDrawerListener(toggle2);
+        drawer.setDrawerListener(toggle2);
     }
 }

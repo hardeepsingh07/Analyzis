@@ -11,10 +11,10 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class LineChartAdapter extends BaseAdapter {
+public class ListAdapter extends BaseAdapter {
     private final ArrayList mData;
 
-    public LineChartAdapter(Map<String, Integer> map) {
+    public ListAdapter(Map<String, Integer> map) {
         mData = new ArrayList();
         mData.addAll(map.entrySet());
     }
