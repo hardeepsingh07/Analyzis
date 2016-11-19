@@ -12,7 +12,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_height="100dp"
+        android:layout_height="80dp"
         android:gravity="center_vertical|center_horizontal">
 
         <android.support.design.widget.FloatingActionButton
@@ -42,6 +42,16 @@
             android:layout_alignParentStart="true" />
     </RelativeLayout>
 
+    <View
+        android:background="@drawable/background"
+        android:layout_height="2dp"
+        android:layout_width="200dp"
+        android:id="@+id/ef_line1"
+        android:layout_marginTop="14dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/ef_notification_layout">
+    </View>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:id="@+id/ef_data_layout"
@@ -57,18 +67,43 @@
             android:id="@+id/ef_data_listview" />
     </RelativeLayout>
 
+    <View
+        android:background="@drawable/background"
+        android:layout_above="@+id/ef_data_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="13dp"
+        android:layout_height="2dp"
+        android:layout_width="300dp"
+        android:id="@+id/ef_line2">
+
+    </View>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/ef_chart_layout"
-        android:layout_centerVertical="true"
-        android:layout_height="250dp">
+        android:padding="5dp"
+        android:layout_below="@+id/ef_line1"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="11dp"
+        android:layout_height="255dp">
 
         <com.github.mikephil.charting.charts.PieChart
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/ef_pie_chart">
+            android:id="@+id/ef_pie_chart"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true">
 
         </com.github.mikephil.charting.charts.PieChart>
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ef_line_chart"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true">
+
+        </com.github.mikephil.charting.charts.LineChart>
 
     </RelativeLayout>
 

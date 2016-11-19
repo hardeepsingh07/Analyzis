@@ -1,14 +1,19 @@
 package com.example.hardeep.analyzis;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
@@ -16,8 +21,12 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,26 +35,85 @@ public class SessionFragment extends Fragment {
 
     public View view;
     public LineChart lineChart;
-    public ListView nLV, dLV;
+    public PieChart pieChart;
+    public ListView dLV;
+    public FloatingActionButton sMin, sMax;
+    public SharedPreferences prefs;
+    public String type;
+    public int bound;
 
     // Required empty public constructor
-    public SessionFragment() {
-    }
+    public SessionFragment() {}
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_session, container, false);
         lineChart = (LineChart) view.findViewById(R.id.sf_line_chart);
+        pieChart = (PieChart) view.findViewById(R.id.sf_pie_chart);
         dLV = (ListView) view.findViewById(R.id.sf_data_listview);
+        sMin = (FloatingActionButton) view.findViewById(R.id.sf_min_fab);
+        sMax = (FloatingActionButton) view.findViewById(R.id.sf_max_fab);
 
-        List<Entry> values = new ArrayList<Entry>();
-        values.add(new Entry(01f, 10));
-        values.add(new Entry(02f, 30));
-        values.add(new Entry(03f, 20));
-        values.add(new Entry(04f, 40));
+        prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        type = prefs.getString("type", "line");
+        bound = prefs.getInt("bound", 5);
+
+        //Hashmap to list entry
+//        List<Entry> entryList = new ArrayList<Entry>(companyDetails.entrySet());
+//        System.out.println("\n==> Size of Entry list: " + entryList.size());
+//        for (Entry temp : entryList) {
+//            System.out.println(temp);
+//        }
+
+        if(type.equals("line")) {
+            //lineGraph
+            List<Entry> lineValues = new ArrayList<>();
+            lineValues.add(new Entry(01f, 10));
+            lineValues.add(new Entry(02f, 30));
+            lineValues.add(new Entry(03f, 20));
+            lineValues.add(new Entry(04f, 40));
+
+            //Make the Graph
+            createLineGraph(lineValues);
+
+            //Set pieGraph to invisible
+            pieChart.setVisibility(View.GONE);
+        } else {
+            List<PieEntry> pieValues = new ArrayList<>();
+            pieValues.add(new PieEntry(18.5f, "Screen1"));
+            pieValues.add(new PieEntry(26.7f, "Screen2"));
+            pieValues.add(new PieEntry(24.0f, "Screen3"));
+            pieValues.add(new PieEntry(30.8f, "Screen4"));
+            pieValues.add(new PieEntry(40.5f, "Screen5"));
+
+            //Make the Graph
+            createPieGraph(pieValues);
+
+            //Set LineGraph to invisible
+            lineChart.setVisibility(View.GONE);
+        }
 
 
+
+        sMin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity().getApplicationContext(), "Session Min", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        sMax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity().getApplicationContext(), "Session Max", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        return view;
+    }
+
+    public void createLineGraph(List<Entry> values) {
         //Each line Data Set
         LineDataSet lineDataSet = new LineDataSet(values, "Number of Sessions");
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -105,7 +173,32 @@ public class SessionFragment extends Fragment {
         Description ds = new Description();
         ds.setText("");
         lineChart.setDescription(ds);
-
-        return view;
     }
+
+    public void createPieGraph(List<PieEntry> pieValues) {
+        PieDataSet set = new PieDataSet(pieValues, "");
+        set.setValueTextSize(13f);
+        set.setValueLineColor(getResources().getColor(R.color.colorIcons));
+
+        ArrayList<Integer> colors = new ArrayList<Integer>();
+        colors.add(getResources().getColor(R.color.colorAccent));
+        colors.add(getResources().getColor(R.color.colorPrimaryDark));
+        colors.add(getResources().getColor(R.color.colorPrimaryLight));
+        colors.add(getResources().getColor(R.color.colorSecondaryText));
+        colors.add(getResources().getColor(R.color.colorDivider));
+        colors.add(ColorTemplate.getHoloBlue());
+        set.setColors(colors);
+
+        PieData data = new PieData(set);
+        pieChart.setData(data);
+        pieChart.setDrawHoleEnabled(false);
+        pieChart.invalidate();
+
+
+        //Empty Description
+        Description ds = new Description();
+        ds.setText("");
+        pieChart.setDescription(ds);
+    }
+
 }

@@ -8,7 +8,7 @@ import android.os.Bundle;
 
 public class Welcome extends Activity {
 
-    public static final int TIME = 4000;
+    public static final int TIME = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
