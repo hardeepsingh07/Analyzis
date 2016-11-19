@@ -1,34 +1,47 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.hardeep.analyzis.SessionFragment"
+    android:orientation="vertical"
     android:id="@+id/main_sf_container">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:id="@+id/sf_data_layout"
-        android:layout_alignParentBottom="true"
-        android:layout_height="125dp">
+        android:layout_width="match_parent"
+        android:id="@+id/sf_chart_layout"
+        android:padding="5dp"
+        android:layout_weight="0.64"
+        android:layout_height="250dp">
 
-        <ListView
+        <com.github.mikephil.charting.charts.LineChart
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/sf_line_chart"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:divider="@color/colorDivider"
-            android:id="@+id/sf_data_listview" />
+            android:layout_alignParentStart="true">
+
+        </com.github.mikephil.charting.charts.LineChart>
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sf_pie_chart"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+
+        </com.github.mikephil.charting.charts.PieChart>
+
     </RelativeLayout>
 
+
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:id="@+id/sf_notification_layout"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
         android:gravity="center_vertical|center_horizontal"
-        android:layout_height="80dp">
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.1">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/sf_max_fab"
@@ -59,53 +72,19 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:id="@+id/sf_chart_layout"
-        android:layout_below="@+id/sf_line1"
-        android:padding="5dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="11dp"
-        android:layout_height="255dp">
+        android:layout_width="wrap_content"
+        android:id="@+id/sf_data_layout"
+        android:layout_weight="0.4"
+        android:layout_height="120dp">
 
-        <com.github.mikephil.charting.charts.LineChart
+        <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/sf_line_chart"
             android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
-
-        </com.github.mikephil.charting.charts.LineChart>
-
-        <com.github.mikephil.charting.charts.PieChart
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/sf_pie_chart"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true">
-
-        </com.github.mikephil.charting.charts.PieChart>
-
+            android:dividerHeight="1sp"
+            android:layout_alignParentStart="true"
+            android:divider="@color/colorDivider"
+            android:id="@+id/sf_data_listview" />
     </RelativeLayout>
 
-    <View
-        android:background="@drawable/background"
-        android:layout_height="2dp"
-        android:layout_width="200dp"
-        android:id="@+id/sf_line1"
-        android:layout_marginTop="14dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/sf_notification_layout">
-    </View>
-
-    <View
-        android:background="@drawable/background"
-        android:layout_above="@+id/sf_data_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="13dp"
-        android:layout_height="2dp"
-        android:layout_width="300dp"
-        android:id="@+id/sf_line2">
-
-    </View>
-
-</RelativeLayout>
+</LinearLayout>

@@ -29,6 +29,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SessionFragment extends Fragment {
@@ -37,6 +38,7 @@ public class SessionFragment extends Fragment {
     public LineChart lineChart;
     public PieChart pieChart;
     public ListView dLV;
+    LineChartAdapter lcA;
     public FloatingActionButton sMin, sMax;
     public SharedPreferences prefs;
     public String type;
@@ -65,6 +67,22 @@ public class SessionFragment extends Fragment {
 //        for (Entry temp : entryList) {
 //            System.out.println(temp);
 //        }
+
+        HashMap<String, Integer> sessions = new HashMap<String, Integer>();
+        sessions.put("Main", 45);
+        sessions.put("Second", 26);
+        sessions.put("Third", 27);
+        sessions.put("Fourth", 19);
+        sessions.put("Fifth", 21);
+        sessions.put("Sixth", 24);
+        sessions.put("Seventh", 19);
+        sessions.put("Eigth", 7);
+        sessions.put("Ninth", 4);
+        sessions.put("Tenth", 25);
+        sessions.put("Eleventh", 32);
+
+        lcA = new LineChartAdapter(sessions);
+        dLV.setAdapter(lcA);
 
         if(type.equals("line")) {
             //lineGraph

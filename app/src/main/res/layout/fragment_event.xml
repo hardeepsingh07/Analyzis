@@ -67,17 +67,6 @@
             android:id="@+id/ef_data_listview" />
     </RelativeLayout>
 
-    <View
-        android:background="@drawable/background"
-        android:layout_above="@+id/ef_data_layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="13dp"
-        android:layout_height="2dp"
-        android:layout_width="300dp"
-        android:id="@+id/ef_line2">
-
-    </View>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:id="@+id/ef_chart_layout"
@@ -106,5 +95,16 @@
         </com.github.mikephil.charting.charts.LineChart>
 
     </RelativeLayout>
+
+    <View
+        android:background="@drawable/background"
+        android:layout_height="2dp"
+        android:layout_width="300dp"
+        android:id="@+id/ef_line2"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/ef_chart_layout"
+        android:layout_centerHorizontal="true">
+
+    </View>
 
 </RelativeLayout>

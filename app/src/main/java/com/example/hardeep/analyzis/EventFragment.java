@@ -110,7 +110,7 @@ public class EventFragment extends Fragment {
     }
     public void createLineGraph(List<Entry> values) {
         //Each line Data Set
-        LineDataSet lineDataSet = new LineDataSet(values, "Number of Sessions");
+        LineDataSet lineDataSet = new LineDataSet(values, "Number of Events");
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineDataSet.setColor(getResources().getColor(R.color.colorPrimaryDark));
         lineDataSet.setDrawCircles(true);

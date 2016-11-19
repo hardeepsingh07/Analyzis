@@ -19,14 +19,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class SettingsManager extends Fragment {
+public class SettingsFragment extends Fragment {
 
     public Switch typeSwitch;
     public TextView bound;
     public SharedPreferences prefs;
 
     // Required empty public constructor
-    public SettingsManager() {
+    public SettingsFragment() {
     }
 
 
