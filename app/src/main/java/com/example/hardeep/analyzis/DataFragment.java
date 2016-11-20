@@ -2,6 +2,7 @@ package com.example.hardeep.analyzis;
 
 
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
@@ -26,12 +27,13 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class DataFragment extends Fragment {
 
@@ -47,7 +49,8 @@ public class DataFragment extends Fragment {
     public HashMap<String, Integer> data;
 
     // Required empty public constructor
-    public DataFragment() {}
+    public DataFragment() {
+    }
 
     public void setData(HashMap<String, Integer> data) {
         this.data = data;
@@ -72,7 +75,7 @@ public class DataFragment extends Fragment {
         bound = prefs.getInt("bound", 5);
 
 
-        if(type.equals("line")) {
+        if (type.equals("line")) {
             //lineGraph
             List<Entry> lineValues = new ArrayList<>();
             lineValues.add(new Entry(01f, 10));
@@ -89,8 +92,8 @@ public class DataFragment extends Fragment {
             List<PieEntry> pieValues = new ArrayList<>();
 
             //Iterate through hashMap to make PieDataList
-            for(Map.Entry<String, Integer> entry: data.entrySet()) {
-                 pieValues.add(new PieEntry((float)entry.getValue(), entry.getKey()));
+            for (Map.Entry<String, Integer> entry : data.entrySet()) {
+                pieValues.add(new PieEntry((float) entry.getValue(), entry.getKey()));
             }
 
             //Make the Graph
@@ -100,6 +103,7 @@ public class DataFragment extends Fragment {
             lineChart.setVisibility(View.GONE);
         }
 
+        analysisAlgorithm(data);
 
 
         sMin.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +121,70 @@ public class DataFragment extends Fragment {
         });
 
         return view;
+    }
+
+
+    public void analysisAlgorithm(HashMap<String, Integer> data) {
+        HashMap<String, Integer> ignored = new HashMap<>();
+        HashMap<String, Integer> noticed = new HashMap<>();
+        int average = 0, minValue = 0, maxValue = 0;
+        String minName = "", maxName = "";
+        int upperBound, lowerBound;
+
+        //Find Average
+        for (Map.Entry<String, Integer> entry : data.entrySet()) {
+            average += entry.getValue();
+        }
+        average = average / data.size();
+
+        //Find Minimum
+        minValue = (int) data.values().toArray()[0];
+        for (Map.Entry<String, Integer> entry : data.entrySet()) {
+            if(entry.getValue() < minValue) {
+                minValue = entry.getValue();
+                minName = entry.getKey();
+            }
+        }
+
+        //Find maximum
+        maxValue = (int) data.values().toArray()[0];
+        for (Map.Entry<String, Integer> entry : data.entrySet()) {
+            if(entry.getValue() > maxValue) {
+                maxValue = entry.getValue();
+                maxName = entry.getKey();
+            }
+        }
+
+        //Generate Bounds
+        upperBound = average + bound;
+        lowerBound = average - bound;
+
+        //evaluate within the bounds
+        for (Map.Entry<String, Integer> entry : data.entrySet()) {
+            int value = entry.getValue();
+            if (value < lowerBound) {
+                ignored.put(entry.getKey(), value);
+            } else if (value > upperBound) {
+                noticed.put(entry.getKey(), value);
+            }
+        }
+
+        // Check for empty ignored list
+        if (ignored.isEmpty()) {
+            ignored.put(minName, minValue);
+            sMin.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+        } else {
+            sMin.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+        }
+
+        // Check for empty noticed list
+        if (noticed.isEmpty()) {
+            noticed.put(maxName, maxValue);
+            sMax.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+        } else {
+            sMax.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+        }
+
     }
 
     public void createLineGraph(List<Entry> values) {
@@ -192,11 +260,17 @@ public class DataFragment extends Fragment {
         set.setValueTextColors(textColors);
         set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 
+//        colors.add(getResources().getColor(R.color.colorAccent));
+//        colors.add(getResources().getColor(R.color.colorPrimaryLight));
+//        colors.add(getResources().getColor(R.color.colorSecondaryText));
+//        colors.add(getResources().getColor(R.color.colorDivider));
+
+        //Get ColorArray declared in Color.xml
         ArrayList<Integer> colors = new ArrayList<Integer>();
-        colors.add(getResources().getColor(R.color.colorAccent));
-        colors.add(getResources().getColor(R.color.colorPrimaryLight));
-        colors.add(getResources().getColor(R.color.colorSecondaryText));
-        colors.add(getResources().getColor(R.color.colorDivider));
+        int[] androidColors = getResources().getIntArray(R.array.androidcolors);
+        for (int i = 0; i < pieValues.size(); i++) {
+            colors.add(androidColors[new Random().nextInt(androidColors.length)]);
+        }
         set.setColors(colors);
 
 
