@@ -48,7 +48,7 @@ public class Main extends AppCompatActivity
         sessions.put("Fourth", 19);
         sessions.put("Fifth", 21);
         sessions.put("Sixth", 24);
-        sessions.put("Seventh", 19);
+        sessions.put("Seventh", 9);
         sessions.put("Eigth", 7);
         sessions.put("Ninth", 14);
         sessions.put("Tenth", 25);

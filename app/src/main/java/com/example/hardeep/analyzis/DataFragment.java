@@ -74,6 +74,8 @@ public class DataFragment extends Fragment {
         type = prefs.getString("type", "line");
         bound = prefs.getInt("bound", 5);
 
+        //Analyze Data
+        analysisAlgorithm(data);
 
         if (type.equals("line")) {
             //lineGraph
@@ -103,7 +105,6 @@ public class DataFragment extends Fragment {
             lineChart.setVisibility(View.GONE);
         }
 
-        analysisAlgorithm(data);
 
 
         sMin.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +160,7 @@ public class DataFragment extends Fragment {
         upperBound = average + bound;
         lowerBound = average - bound;
 
+        System.out.println(average + " : "  + upperBound + " : " + lowerBound);
         //evaluate within the bounds
         for (Map.Entry<String, Integer> entry : data.entrySet()) {
             int value = entry.getValue();
@@ -173,16 +175,21 @@ public class DataFragment extends Fragment {
         if (ignored.isEmpty()) {
             ignored.put(minName, minValue);
             sMin.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+            System.out.println("Empty : Ignored -> " + ignored);
         } else {
             sMin.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            System.out.println("Not Empty : Ignored -> " + ignored);
         }
 
         // Check for empty noticed list
         if (noticed.isEmpty()) {
             noticed.put(maxName, maxValue);
             sMax.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
+            System.out.println("Empty : Noticed -> " + noticed);
         } else {
             sMax.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            System.out.println("Not Empty : Noticed -> " + noticed);
+
         }
 
     }

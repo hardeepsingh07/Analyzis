@@ -52,7 +52,7 @@
             android:layout_marginLeft="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_toEndOf="@+id/df_min_fab"
-            android:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimary"
             app:fabSize="normal"
             app:srcCompat="@drawable/up_white" />
 
@@ -65,7 +65,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginLeft="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
-            android:backgroundTint="@color/colorAccent"
+            app:backgroundTint="@color/colorAccent"
             app:fabSize="normal"
             app:srcCompat="@drawable/down_white" />
 
