@@ -3,6 +3,8 @@ package com.example.hardeep.analyzis;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.NavigationView;
@@ -18,10 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.HashMap;
+
+import me.itangqi.waveloadingview.WaveLoadingView;
 
 public class Main extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,9 +36,10 @@ public class Main extends AppCompatActivity
     DrawerLayout drawer;
     ActionBarDrawerToggle toggle;
     Toolbar toolbar;
+    WaveLoadingView mWaveLoadingView;
 
-    HashMap<String, Integer> sessions;
-    HashMap<String, Integer> events;
+    HashMap<String, Integer> mapSessions;
+    HashMap<String, Integer> mapEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,33 +48,27 @@ public class Main extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mWaveLoadingView = (WaveLoadingView) findViewById(R.id.waveLoadingView);
+        mWaveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
+        mWaveLoadingView.setCenterTitle("Analyzis");
+        mWaveLoadingView.setProgressValue(0);
+        mWaveLoadingView.setBorderWidth(2);
+        mWaveLoadingView.setAmplitudeRatio(0);
+        mWaveLoadingView.setBorderColor(getResources().getColor(R.color.colorPrimaryDark));
 
-        sessions = new HashMap<>();
-        sessions.put("Main", 45);
-        sessions.put("Second", 26);
-        sessions.put("Third", 27);
-        sessions.put("Fourth", 19);
-        sessions.put("Fifth", 21);
-        sessions.put("Sixth", 24);
-        sessions.put("Seventh", 9);
-        sessions.put("Eigth", 7);
-        sessions.put("Ninth", 14);
-        sessions.put("Tenth", 25);
-        sessions.put("Eleventh", 32);
+        //Intiate HashMaps
+        mapSessions = new HashMap<>();
+        mapEvents = new HashMap<>();
+
+        mWaveLoadingView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Start the load and animation
+               new MyAsyncTask().execute();
+            }
+        });
 
 
-        events = new HashMap<>();
-        events.put("EMainE", 75);
-        events.put("ESecondE", 66);
-        events.put("EThirdE", 57);
-        events.put("EFourthE", 39);
-        events.put("EFifthE", 41);
-        events.put("ESixthE", 74);
-        events.put("ESeventhE", 59);
-        events.put("EEigthE", 47);
-        events.put("ENinthE", 14);
-        events.put("ETenthE", 50);
-        events.put("EEleventhE", 90);
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -95,13 +97,15 @@ public class Main extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.sessions) {
+            mWaveLoadingView.setVisibility(View.GONE);
             DataFragment df = new DataFragment();
-            df.setData(sessions);
+            df.setData(mapSessions);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
         } else if (id == R.id.events) {
+            mWaveLoadingView.setVisibility(View.GONE);
             DataFragment df = new DataFragment();
-            df.setData(events);
+            df.setData(mapEvents);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
         } else if (id == R.id.settings) {
@@ -190,5 +194,83 @@ public class Main extends AppCompatActivity
             }
         };
         drawer.setDrawerListener(toggle2);
+    }
+
+    private class MyAsyncTask extends AsyncTask<Void, Integer, Void> {
+
+        @Override
+        protected Void doInBackground(Void... integers) {
+            try {
+                Server server = new Server();
+
+                //Update Wave
+                for(int i = 0; i < 49; i++) {
+                    Thread.sleep(10);
+                    publishProgress(i);
+                }
+
+                //Get Session Data and Parse into HashMap
+                String jsonSessions = server.getSessions();
+                JSONObject jsonSessionObject = new JSONObject(jsonSessions);
+                JSONArray jsonSessionArray = jsonSessionObject.getJSONArray("Sessions");
+                for (int i = 0; i < jsonSessionArray.length(); i++) {
+                    JSONObject jsonobject = jsonSessionArray.getJSONObject(i);
+                    String name = jsonobject.getString("Name");
+                    int value = jsonobject.getInt("count");
+                    mapSessions.put(name,value);
+                }
+
+                //Stall for animations
+                Thread.sleep(1500);
+                publishProgress(50);
+
+                //Get Event Data and Parse with HashMap
+                String jsonEvents = server.getEvents();
+                JSONObject jsonEventObject = new JSONObject(jsonEvents);
+                JSONArray jsonEventArray = jsonEventObject.getJSONArray("Events");
+                for (int i = 0; i < jsonEventArray.length(); i++) {
+                    JSONObject jsonobject2 = jsonEventArray.getJSONObject(i);
+                    String name = jsonobject2.getString("Name");
+                    int value = jsonobject2.getInt("count");
+                    mapEvents.put(name,value);
+                }
+
+                //Update Wave
+                for(int i = 49; i <= 99; i++) {
+                    Thread.sleep(10);
+                    publishProgress(i);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mWaveLoadingView.setCenterTitle("Retrieving...");
+            mWaveLoadingView.setAmplitudeRatio(60);
+            mWaveLoadingView.setBorderColor(getResources().getColor(R.color.colorPrimaryDark));
+            mWaveLoadingView.setWaveColor(getResources().getColor(R.color.colorAccent));
+        }
+
+        @Override
+        protected void onPostExecute(Void integer) {
+            super.onPostExecute(integer);
+            mWaveLoadingView.setCenterTitle("Done!");
+            mWaveLoadingView.setAmplitudeRatio(1);
+            mWaveLoadingView.setCenterTitleColor(getResources().getColor(R.color.colorAccent));
+            mWaveLoadingView.setWaveColor(getResources().getColor(R.color.colorPrimaryDark));
+            mWaveLoadingView.setBorderWidth(2f);
+            mWaveLoadingView.setBorderColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            mWaveLoadingView.setProgressValue((int) values[0]);
+        }
     }
 }

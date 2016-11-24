@@ -1,6 +1,6 @@
 package com.example.hardeep.analyzis;
 
-import android.widget.Toast;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -12,17 +12,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.json.JSONObject;
+class Server {
 
-public class Server {
+    private static Random rand;
+    private static int range;
+    private static ArrayList<HashMap<String, String>> sessionList, eventList;
+    private static HttpURLConnection conn;
+    private static URL urlAddSession, urlAddEvent, urlGetEvents, urlGetSessions, urlDeleteSessions, UrlDeleteEvents;
 
-    public static Random rand;
-    public static int range;
-    public static ArrayList<HashMap<String, String>> sessionList, eventList;
-    public static HttpURLConnection conn;
-    public static URL urlAddSession, urlAddEvent, urlGetEvents, urlGetSessions, urlDeleteSessions, UrlDeleteEvents;
-
-    public Server() throws Exception {
+    Server() throws Exception {
         urlAddSession = new URL("http://razp1.ddns.net:5000/addSession");
         urlAddEvent = new URL("http://razp1.ddns.net:5000/addEvent");
         urlGetEvents = new URL("http://razp1.ddns.net:5000/getAllEvents");
@@ -31,7 +29,7 @@ public class Server {
         UrlDeleteEvents = new URL("http://razp1.ddns.net:5000/dropEvents");
     }
 
-    public static void fillSession() throws Exception {
+    void fillSession() throws Exception {
         // Sessions
         System.out.println("Session List: ");
         for (int i = 0; i < 10; i++) {
@@ -43,7 +41,7 @@ public class Server {
         printList(sessionList);
     }
 
-    public static void fillEvent() throws Exception {
+    void fillEvent() throws Exception {
         // Events
         System.out.println("\nEvent List: ");
         for (int i = 0; i < 10; i++) {
@@ -55,43 +53,43 @@ public class Server {
         printList(eventList);
     }
 
-    public static void deleteSession() throws Exception {
+    String deleteSession() throws Exception {
         // Delete Sessions Table
         System.out.println("\nDeleting Session Database...");
         conn = (HttpURLConnection) urlDeleteSessions.openConnection();
         conn.setRequestMethod("DELETE");
         System.out.print("Session Delete Response: ");
-        readMessage();
+        return readData();
     }
 
-    public static void deleteEvent() throws Exception {
+    String deleteEvent() throws Exception {
         // Delete Events Table
         System.out.println("\nDeleting Event Database...");
         conn = (HttpURLConnection) UrlDeleteEvents.openConnection();
         conn.setRequestMethod("DELETE");
         System.out.print("Event Delete Response: ");
-        readMessage();
+        return readData();
     }
 
-    public static void printSession() throws Exception {
+    String getSessions() throws Exception {
         // Print Session Database
         System.out.println("\nSession Database...");
         conn = (HttpURLConnection) urlGetSessions.openConnection();
         conn.setRequestMethod("GET");
         System.out.println("Session Table: ");
-        readData();
+        return readData();
     }
 
-    public static void printEvent() throws Exception {
+    String getEvents() throws Exception {
         // Print Event Database
         System.out.println("\nEvent Database...");
         conn = (HttpURLConnection) urlGetEvents.openConnection();
         conn.setRequestMethod("GET");
         System.out.println("Event Table: ");
-        readData();
+        return readData();
     }
 
-    public static void postSession(ArrayList<HashMap<String, String>> data) throws Exception {
+    public String postSession(ArrayList<HashMap<String, String>> data) throws Exception {
         // Post in Session Database
         System.out.println("\nPosting in Session Database...");
         for (HashMap<String, String> h : data) {
@@ -105,11 +103,11 @@ public class Server {
             os.write(json.getBytes("UTF-8"));
             os.close();
 
-            readMessage();
         }
+        return readData();
     }
 
-    public static void postEvent(ArrayList<HashMap<String, String>> data) throws Exception {
+    public String postEvent(ArrayList<HashMap<String, String>> data) throws Exception {
         // Post in Event Database
         System.out.println("\nPosting in Event Database...");
         for (HashMap<String, String> h : data) {
@@ -123,11 +121,11 @@ public class Server {
             os.write(json.getBytes("UTF-8"));
             os.close();
 
-            readMessage();
         }
+        return readData();
     }
 
-    public static void printList(ArrayList<HashMap<String, String>> list) {
+    public void printList(ArrayList<HashMap<String, String>> list) {
         // Print ArrayList of HashMap
         int i = 0;
         for (HashMap<String, String> h : list) {
@@ -140,7 +138,7 @@ public class Server {
         }
     }
 
-    public static String readMessage() throws Exception {
+    public String readData() throws Exception {
         // read the response
         BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line = "";
@@ -151,17 +149,4 @@ public class Server {
         rd.close();
         return print;
     }
-
-    public static String readData() throws Exception {
-        // read the response
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line = "";
-        String print = "";
-        while ((line = rd.readLine()) != null) {
-            print += line;
-        }
-        rd.close();
-        return print;
-    }
-
 }

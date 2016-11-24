@@ -9,8 +9,29 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorIcons"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.hardeep.analyzis.Main"
     tools:showIn="@layout/app_bar_main">
+
+    <me.itangqi.waveloadingview.WaveLoadingView
+        android:id="@+id/waveLoadingView"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        app:wlv_borderColor="@color/colorIcons"
+        app:wlv_borderWidth="3dp"
+        app:wlv_progressValue="0"
+        app:wlv_shapeType="circle"
+        app:wlv_round_rectangle="true"
+        app:wlv_triangle_direction="north"
+        app:wlv_titleCenterStrokeColor="@color/colorIcons"
+        app:wlv_titleCenterStrokeWidth="0dp"
+        app:wlv_titleCenter="Analyzis"
+        app:wlv_titleCenterColor="@color/colorPrimaryDark"
+        app:wlv_titleCenterSize="30sp"
+        app:wlv_waveAmplitude="0"
+        app:wlv_waveColor="@color/colorAccent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
