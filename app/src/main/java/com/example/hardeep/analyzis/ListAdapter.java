@@ -9,12 +9,13 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ListAdapter extends BaseAdapter {
     private final ArrayList mData;
 
-    public ListAdapter(Map<String, Integer> map) {
+    public ListAdapter(HashMap<String, Integer> map) {
         mData = new ArrayList();
         mData.addAll(map.entrySet());
     }

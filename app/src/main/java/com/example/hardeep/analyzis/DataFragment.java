@@ -6,7 +6,7 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +46,7 @@ public class DataFragment extends Fragment {
     public SharedPreferences prefs;
     public String type;
     public int bound;
-    public HashMap<String, Integer> data;
+    public HashMap<String, Integer> data, ignored, noticed;
 
     // Required empty public constructor
     public DataFragment() {
@@ -111,6 +111,8 @@ public class DataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity().getApplicationContext(), "Session Min", Toast.LENGTH_SHORT).show();
+                DlogFragment dlogFragment = DlogFragment.newInstance(ignored);
+                dlogFragment.show(getFragmentManager(), "Dialog Fragment Min");
             }
         });
 
@@ -118,6 +120,8 @@ public class DataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity().getApplicationContext(), "Session Max", Toast.LENGTH_SHORT).show();
+                DlogFragment dlogFragment = DlogFragment.newInstance(noticed);
+                dlogFragment.show(getFragmentManager(), "Dialog Fragment Max");
             }
         });
 
@@ -126,8 +130,8 @@ public class DataFragment extends Fragment {
 
 
     public void analysisAlgorithm(HashMap<String, Integer> data) {
-        HashMap<String, Integer> ignored = new HashMap<>();
-        HashMap<String, Integer> noticed = new HashMap<>();
+        ignored = new HashMap<>();
+        noticed = new HashMap<>();
         int average = 0, minValue = 0, maxValue = 0;
         String minName = "", maxName = "";
         int upperBound, lowerBound;

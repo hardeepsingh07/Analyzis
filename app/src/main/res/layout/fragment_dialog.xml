@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context="com.example.hardeep.analyzis.DlogFragment">
+
+
+    <TextView
+        android:id="@+id/dialogMessage"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.40"
+        android:background="@color/colorPrimaryLight"
+        android:padding="5dp"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="18sp"
+        android:typeface="serif" />
+
+    <ListView
+        android:id="@+id/dialogList"
+        android:layout_width="match_parent"
+        android:layout_height="291dp"
+        android:layout_weight="0.58"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.02"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/dialogScreenshot"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/db_design"
+            android:text="ScreenShot"
+            android:layout_gravity="left"
+            android:typeface="serif"
+            android:textSize="16sp"
+            android:textAlignment="center"
+            android:textColor="?attr/colorPrimaryDark" />
+
+        <Button
+            android:id="@+id/dialogClose"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/db_design"
+            android:text="Close"
+            android:layout_gravity="right"
+            android:typeface="serif"
+            android:textSize="16sp"
+            android:textColor="?attr/colorPrimaryDark"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+</LinearLayout>

@@ -54,6 +54,7 @@ public class Main extends AppCompatActivity
         mWaveLoadingView.setProgressValue(0);
         mWaveLoadingView.setBorderWidth(2);
         mWaveLoadingView.setAmplitudeRatio(0);
+        mWaveLoadingView.setWaveColor(getResources().getColor(R.color.colorAccent));
         mWaveLoadingView.setBorderColor(getResources().getColor(R.color.colorPrimaryDark));
 
         //Intiate HashMaps
@@ -97,17 +98,25 @@ public class Main extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.sessions) {
-            mWaveLoadingView.setVisibility(View.GONE);
-            DataFragment df = new DataFragment();
-            df.setData(mapSessions);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
+            if(!mapSessions.isEmpty()) {
+                mWaveLoadingView.setVisibility(View.GONE);
+                DataFragment df = new DataFragment();
+                df.setData(mapSessions);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
+            } else {
+                Toast.makeText(Main.this, "Please retrieve the data first...", Toast.LENGTH_SHORT).show();
+            }
         } else if (id == R.id.events) {
-            mWaveLoadingView.setVisibility(View.GONE);
-            DataFragment df = new DataFragment();
-            df.setData(mapEvents);
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
+            if(!mapEvents.isEmpty()) {
+                mWaveLoadingView.setVisibility(View.GONE);
+                DataFragment df = new DataFragment();
+                df.setData(mapEvents);
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
+            } else {
+                Toast.makeText(Main.this, "Please retrieve the data first...", Toast.LENGTH_SHORT).show();
+            }
         } else if (id == R.id.settings) {
             SettingsFragment sm = new SettingsFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -125,7 +134,15 @@ public class Main extends AppCompatActivity
                 return false;
             }
         } else if (id == R.id.refresh) {
-
+            mWaveLoadingView.setShapeType(WaveLoadingView.ShapeType.CIRCLE);
+            mWaveLoadingView.setCenterTitle("Analyzis");
+            mWaveLoadingView.setCenterTitleColor(getResources().getColor(R.color.colorPrimaryDark));
+            mWaveLoadingView.setProgressValue(0);
+            mWaveLoadingView.setBorderWidth(2);
+            mWaveLoadingView.setAmplitudeRatio(0);
+            mWaveLoadingView.setWaveColor(getResources().getColor(R.color.colorAccent));
+            mWaveLoadingView.setBorderColor(getResources().getColor(R.color.colorPrimaryDark));
+            mWaveLoadingView.setVisibility(View.VISIBLE);
         }
 
         //Close Drawer
