@@ -47,6 +47,7 @@ public class DataFragment extends Fragment {
     public String type;
     public int bound;
     public HashMap<String, Integer> data, ignored, noticed;
+    public boolean minEmptyTrigger = false, maxEmptyTrigger = false;
 
     // Required empty public constructor
     public DataFragment() {
@@ -111,8 +112,13 @@ public class DataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity().getApplicationContext(), "Session Min", Toast.LENGTH_SHORT).show();
-                DlogFragment dlogFragment = DlogFragment.newInstance(ignored);
-                dlogFragment.show(getFragmentManager(), "Dialog Fragment Min");
+                if(minEmptyTrigger) {
+                    DlogFragment dlogFragment = DlogFragment.newInstance(ignored, "singleMin");
+                    dlogFragment.show(getFragmentManager(), "Dialog Fragment Min");
+                } else {
+                    DlogFragment dlogFragment = DlogFragment.newInstance(ignored, "multipleMin");
+                    dlogFragment.show(getFragmentManager(), "Dialog Fragment Min");
+                }
             }
         });
 
@@ -120,8 +126,14 @@ public class DataFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getActivity().getApplicationContext(), "Session Max", Toast.LENGTH_SHORT).show();
-                DlogFragment dlogFragment = DlogFragment.newInstance(noticed);
-                dlogFragment.show(getFragmentManager(), "Dialog Fragment Max");
+                if(maxEmptyTrigger) {
+                    DlogFragment dlogFragment = DlogFragment.newInstance(noticed, "singleMax");
+                    dlogFragment.show(getFragmentManager(), "Dialog Fragment Max");
+                }
+                else {
+                    DlogFragment dlogFragment = DlogFragment.newInstance(noticed, "multipleLMax");
+                    dlogFragment.show(getFragmentManager(), "Dialog Fragment Max");
+                }
             }
         });
 
@@ -187,10 +199,12 @@ public class DataFragment extends Fragment {
 
         // Check for empty noticed list
         if (noticed.isEmpty()) {
+            minEmptyTrigger = true;
             noticed.put(maxName, maxValue);
             sMax.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
             System.out.println("Empty : Noticed -> " + noticed);
         } else {
+            maxEmptyTrigger = true;
             sMax.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
             System.out.println("Not Empty : Noticed -> " + noticed);
 

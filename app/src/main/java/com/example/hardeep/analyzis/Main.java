@@ -1,9 +1,9 @@
 package com.example.hardeep.analyzis;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,8 +13,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,11 +67,9 @@ public class Main extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //Start the load and animation
-               new MyAsyncTask().execute();
+                new MyAsyncTask().execute();
             }
         });
-
-
 
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -98,7 +98,7 @@ public class Main extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.sessions) {
-            if(!mapSessions.isEmpty()) {
+            if (!mapSessions.isEmpty()) {
                 mWaveLoadingView.setVisibility(View.GONE);
                 DataFragment df = new DataFragment();
                 df.setData(mapSessions);
@@ -108,7 +108,7 @@ public class Main extends AppCompatActivity
                 Toast.makeText(Main.this, "Please retrieve the data first...", Toast.LENGTH_SHORT).show();
             }
         } else if (id == R.id.events) {
-            if(!mapEvents.isEmpty()) {
+            if (!mapEvents.isEmpty()) {
                 mWaveLoadingView.setVisibility(View.GONE);
                 DataFragment df = new DataFragment();
                 df.setData(mapEvents);
@@ -125,9 +125,7 @@ public class Main extends AppCompatActivity
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 drawer.closeDrawer(GravityCompat.START);
-                takeScreenShot();
-                drawer.setDrawerListener(null);
-                drawer.setDrawerListener(toggle);
+                alertDialogScreenShot();
                 return true;
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
@@ -156,8 +154,8 @@ public class Main extends AppCompatActivity
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    takeScreenShot();
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    alertDialogScreenShot();
                 } else {
                     Toast.makeText(Main.this, "Permission are required to save Screenshots", Toast.LENGTH_SHORT).show();
                 }
@@ -165,18 +163,17 @@ public class Main extends AppCompatActivity
         }
     }
 
-
-    public void takeScreenShot() {
-        ActionBarDrawerToggle toggle2 = new ActionBarDrawerToggle(this, drawer,
-                toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_open) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
+    public void alertDialogScreenShot() {
+        final File folder = new File(Environment.getExternalStorageDirectory().toString() + "/Analzis");
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Main.this);
+        dialogBuilder.setTitle("Take ScreenShot");
+        dialogBuilder.setMessage("Do you want to take a screenshot of the current view?" + "\n" + "Picture Location: "  + folder.getAbsolutePath());
+        dialogBuilder.setPositiveButton("Snap!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
                 Date now = new Date();
                 DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
                 try {
-                    File folder = new File(Environment.getExternalStorageDirectory().toString() + "/AnalzisScreenShots");
                     boolean success = false;
                     if (!folder.exists()) {
                         success = folder.mkdirs();
@@ -184,7 +181,6 @@ public class Main extends AppCompatActivity
 
                     String mPath = folder.getAbsolutePath();
                     System.out.println(mPath + ": " + folder.exists() + ": " + success);
-
 
                     // create bitmap screen capture
                     View v1 = getWindow().getDecorView().getRootView();
@@ -204,14 +200,66 @@ public class Main extends AppCompatActivity
                     Toast.makeText(Main.this, "ScreenShot Saved : " + imageFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
                 } catch (Throwable e) {
                     e.printStackTrace();
-                }            }
-
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
+                }
             }
-        };
-        drawer.setDrawerListener(toggle2);
+        });
+        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        dialogBuilder.show();
     }
+
+
+//    public void takeScreenShot() {
+//        ActionBarDrawerToggle toggle2 = new ActionBarDrawerToggle(this, drawer,
+//                toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_open) {
+//
+//            /** Called when a drawer has settled in a completely closed state. */
+//            public void onDrawerClosed(View view) {
+//                super.onDrawerClosed(view);
+//                Date now = new Date();
+//                DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+//                try {
+//                    File folder = new File(Environment.getExternalStorageDirectory().toString() + "/Analzis");
+//                    boolean success = false;
+//                    if (!folder.exists()) {
+//                        success = folder.mkdirs();
+//                    }
+//
+//                    String mPath = folder.getAbsolutePath();
+//                    System.out.println(mPath + ": " + folder.exists() + ": " + success);
+//
+//
+//                    // create bitmap screen capture
+//                    View v1 = getWindow().getDecorView().getRootView();
+//                    v1.setDrawingCacheEnabled(true);
+//                    Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+//                    v1.setDrawingCacheEnabled(false);
+//
+//                    File imageFile = new File(mPath, now + ".jpg");
+//                    System.out.println(mPath + ": " + imageFile.exists());
+//
+//
+//                    FileOutputStream outputStream = new FileOutputStream(imageFile);
+//                    int quality = 100;
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+//                    outputStream.flush();
+//                    outputStream.close();
+//                    Toast.makeText(Main.this, "ScreenShot Saved : " + imageFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
+//                } catch (Throwable e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            public void onDrawerOpened(View drawerView) {
+//                super.onDrawerOpened(drawerView);
+//            }
+//        };
+//        drawer.setDrawerListener(toggle2);
+//    }
 
     private class MyAsyncTask extends AsyncTask<Void, Integer, Void> {
 
@@ -221,7 +269,7 @@ public class Main extends AppCompatActivity
                 Server server = new Server();
 
                 //Update Wave
-                for(int i = 0; i < 49; i++) {
+                for (int i = 0; i < 49; i++) {
                     Thread.sleep(10);
                     publishProgress(i);
                 }
@@ -234,7 +282,7 @@ public class Main extends AppCompatActivity
                     JSONObject jsonobject = jsonSessionArray.getJSONObject(i);
                     String name = jsonobject.getString("Name");
                     int value = jsonobject.getInt("count");
-                    mapSessions.put(name,value);
+                    mapSessions.put(name, value);
                 }
 
                 //Stall for animations
@@ -249,11 +297,11 @@ public class Main extends AppCompatActivity
                     JSONObject jsonobject2 = jsonEventArray.getJSONObject(i);
                     String name = jsonobject2.getString("Name");
                     int value = jsonobject2.getInt("count");
-                    mapEvents.put(name,value);
+                    mapEvents.put(name, value);
                 }
 
                 //Update Wave
-                for(int i = 49; i <= 99; i++) {
+                for (int i = 49; i <= 99; i++) {
                     Thread.sleep(10);
                     publishProgress(i);
                 }
