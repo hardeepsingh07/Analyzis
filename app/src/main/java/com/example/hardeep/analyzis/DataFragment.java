@@ -27,6 +27,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -62,6 +63,8 @@ public class DataFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_data, container, false);
         lineChart = (LineChart) view.findViewById(R.id.df_line_chart);
         pieChart = (PieChart) view.findViewById(R.id.df_pie_chart);
+        lineChart.animateXY(3000, 3000);
+        pieChart.animateY(3000);
         dLV = (ListView) view.findViewById(R.id.df_data_listview);
         lA = new ListAdapter(data);
         dLV.setAdapter(lA);
@@ -180,31 +183,33 @@ public class DataFragment extends Fragment {
         //evaluate within the bounds
         for (Map.Entry<String, Integer> entry : data.entrySet()) {
             int value = entry.getValue();
-            if (value < lowerBound) {
+            if (value <= lowerBound) {
                 ignored.put(entry.getKey(), value);
-            } else if (value > upperBound) {
+            } else if (value >= upperBound) {
                 noticed.put(entry.getKey(), value);
             }
         }
 
         // Check for empty ignored list
         if (ignored.isEmpty()) {
+            minEmptyTrigger = true;
             ignored.put(minName, minValue);
             sMin.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
             System.out.println("Empty : Ignored -> " + ignored);
         } else {
+            minEmptyTrigger = false;
             sMin.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
             System.out.println("Not Empty : Ignored -> " + ignored);
         }
 
         // Check for empty noticed list
         if (noticed.isEmpty()) {
-            minEmptyTrigger = true;
+            maxEmptyTrigger = true;
             noticed.put(maxName, maxValue);
             sMax.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorPrimary)));
             System.out.println("Empty : Noticed -> " + noticed);
         } else {
-            maxEmptyTrigger = true;
+            minEmptyTrigger = false;
             sMax.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
             System.out.println("Not Empty : Noticed -> " + noticed);
 
@@ -285,17 +290,11 @@ public class DataFragment extends Fragment {
         set.setValueTextColors(textColors);
         set.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 
-//        colors.add(getResources().getColor(R.color.colorAccent));
-//        colors.add(getResources().getColor(R.color.colorPrimaryLight));
-//        colors.add(getResources().getColor(R.color.colorSecondaryText));
-//        colors.add(getResources().getColor(R.color.colorDivider));
 
         //Get ColorArray declared in Color.xml
         ArrayList<Integer> colors = new ArrayList<Integer>();
-        int[] androidColors = getResources().getIntArray(R.array.androidcolors);
-        for (int i = 0; i < pieValues.size(); i++) {
-            colors.add(androidColors[new Random().nextInt(androidColors.length)]);
-        }
+        for (int c : ColorTemplate.LIBERTY_COLORS)
+            colors.add(c);
         set.setColors(colors);
 
 

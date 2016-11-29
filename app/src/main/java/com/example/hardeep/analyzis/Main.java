@@ -103,7 +103,7 @@ public class Main extends AppCompatActivity
                 DataFragment df = new DataFragment();
                 df.setData(mapSessions);
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, "DataFragment").commit();
             } else {
                 Toast.makeText(Main.this, "Please retrieve the data first...", Toast.LENGTH_SHORT).show();
             }
@@ -113,11 +113,12 @@ public class Main extends AppCompatActivity
                 DataFragment df = new DataFragment();
                 df.setData(mapEvents);
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, df.getTag()).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_layout_container, df, "DataFragment").commit();
             } else {
                 Toast.makeText(Main.this, "Please retrieve the data first...", Toast.LENGTH_SHORT).show();
             }
         } else if (id == R.id.settings) {
+            mWaveLoadingView.setVisibility(View.GONE);
             SettingsFragment sm = new SettingsFragment();
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.main_layout_container, sm, sm.getTag()).commit();
@@ -141,6 +142,12 @@ public class Main extends AppCompatActivity
             mWaveLoadingView.setWaveColor(getResources().getColor(R.color.colorAccent));
             mWaveLoadingView.setBorderColor(getResources().getColor(R.color.colorPrimaryDark));
             mWaveLoadingView.setVisibility(View.VISIBLE);
+
+
+            DataFragment fragment = (DataFragment) getSupportFragmentManager().findFragmentByTag("DataFragment");
+            if(fragment != null && fragment.isVisible()) {
+                getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            }
         }
 
         //Close Drawer
@@ -212,54 +219,6 @@ public class Main extends AppCompatActivity
         dialogBuilder.show();
     }
 
-
-//    public void takeScreenShot() {
-//        ActionBarDrawerToggle toggle2 = new ActionBarDrawerToggle(this, drawer,
-//                toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_open) {
-//
-//            /** Called when a drawer has settled in a completely closed state. */
-//            public void onDrawerClosed(View view) {
-//                super.onDrawerClosed(view);
-//                Date now = new Date();
-//                DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
-//                try {
-//                    File folder = new File(Environment.getExternalStorageDirectory().toString() + "/Analzis");
-//                    boolean success = false;
-//                    if (!folder.exists()) {
-//                        success = folder.mkdirs();
-//                    }
-//
-//                    String mPath = folder.getAbsolutePath();
-//                    System.out.println(mPath + ": " + folder.exists() + ": " + success);
-//
-//
-//                    // create bitmap screen capture
-//                    View v1 = getWindow().getDecorView().getRootView();
-//                    v1.setDrawingCacheEnabled(true);
-//                    Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-//                    v1.setDrawingCacheEnabled(false);
-//
-//                    File imageFile = new File(mPath, now + ".jpg");
-//                    System.out.println(mPath + ": " + imageFile.exists());
-//
-//
-//                    FileOutputStream outputStream = new FileOutputStream(imageFile);
-//                    int quality = 100;
-//                    bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-//                    outputStream.flush();
-//                    outputStream.close();
-//                    Toast.makeText(Main.this, "ScreenShot Saved : " + imageFile.getAbsolutePath(), Toast.LENGTH_SHORT).show();
-//                } catch (Throwable e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            public void onDrawerOpened(View drawerView) {
-//                super.onDrawerOpened(drawerView);
-//            }
-//        };
-//        drawer.setDrawerListener(toggle2);
-//    }
 
     private class MyAsyncTask extends AsyncTask<Void, Integer, Void> {
 
