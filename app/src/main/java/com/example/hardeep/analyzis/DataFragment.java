@@ -26,7 +26,9 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.DecimalFormat;
@@ -83,11 +85,13 @@ public class DataFragment extends Fragment {
 
         if (type.equals("line")) {
             //lineGraph
+
+            int i = 0; //index for the table data in graph
             List<Entry> lineValues = new ArrayList<>();
-            lineValues.add(new Entry(01f, 10));
-            lineValues.add(new Entry(02f, 30));
-            lineValues.add(new Entry(03f, 20));
-            lineValues.add(new Entry(04f, 40));
+            for(Map.Entry<String, Integer> item: data.entrySet()) {
+                i++;
+                lineValues.add(new Entry(i, item.getValue()));
+            }
 
             //Make the Graph
             createLineGraph(lineValues);
@@ -108,6 +112,36 @@ public class DataFragment extends Fragment {
             //Set LineGraph to invisible
             lineChart.setVisibility(View.GONE);
         }
+
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Toast.makeText(getActivity().getApplicationContext(), "VAL SELECTED: "  +
+                        "Value: " + e.getY() + ", index: " + h.getX()
+                                + ", DataSet index: " + h.getDataSetIndex(),
+                         Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+
+        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                Toast.makeText(getActivity().getApplicationContext(), "VAL SELECTED: "  +
+                                "Value: " + e.getY() + ", index: " + h.getX()
+                                + ", DataSet index: " + h.getDataSetIndex(),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
 
 
 
@@ -250,28 +284,28 @@ public class DataFragment extends Fragment {
         YAxis yAxisLeft = lineChart.getAxisLeft();
         yAxisLeft.setEnabled(false);
 
-        // the labels that should be drawn on the XAxis
-        final String[] quarters = new String[]{"Q1", "Q2", "Q3", "Q4"};
-
-        IAxisValueFormatter formatter = new IAxisValueFormatter() {
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                System.out.println(value);
-                return quarters[(int) value - 1];
-            }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
-        };
+//        // the labels that should be drawn on the XAxis
+//        final String[] quarters = new String[]{"Q1", "Q2", "Q3", "Q4"};
+//
+//        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+//
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                System.out.println(value);
+//                return quarters[(int) value - 1];
+//            }
+//
+//            @Override
+//            public int getDecimalDigits() {
+//                return 0;
+//            }
+//        };
 
         //Diable Axis
         XAxis xAxis = lineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f); // minimum axis-step (interval) is 1
-        xAxis.setValueFormatter(formatter);
+//        xAxis.setValueFormatter(formatter);
 
         //Empty Description
         Description ds = new Description();
@@ -280,6 +314,10 @@ public class DataFragment extends Fragment {
     }
 
     public void createPieGraph(List<PieEntry> pieValues) {
+        pieChart.setClickable(true);
+        pieChart.setHighlightPerTapEnabled(true);
+        pieChart.setTouchEnabled(true);
+
         PieDataSet set = new PieDataSet(pieValues, "");
         set.setValueTextSize(13f);
         set.setValueLineColor(getResources().getColor(R.color.colorIcons));
