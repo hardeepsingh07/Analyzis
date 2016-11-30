@@ -64,7 +64,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 final NumberPicker picker = new NumberPicker(getActivity());
-                picker.setMinValue(5);
+                picker.setMinValue(1);
                 picker.setMaxValue(100);
                 picker.setValue(Integer.parseInt(bound.getText().toString()));
 

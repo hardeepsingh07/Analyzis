@@ -117,8 +117,7 @@ public class DataFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 Toast.makeText(getActivity().getApplicationContext(), "VAL SELECTED: "  +
-                        "Value: " + e.getY() + ", index: " + h.getX()
-                                + ", DataSet index: " + h.getDataSetIndex(),
+                        "Value: " + e.getY(),
                          Toast.LENGTH_SHORT).show();
             }
 
@@ -132,8 +131,7 @@ public class DataFragment extends Fragment {
             @Override
             public void onValueSelected(Entry e, Highlight h) {
                 Toast.makeText(getActivity().getApplicationContext(), "VAL SELECTED: "  +
-                                "Value: " + e.getY() + ", index: " + h.getX()
-                                + ", DataSet index: " + h.getDataSetIndex(),
+                                "Value: " + e.getY(),
                         Toast.LENGTH_SHORT).show();
             }
 
@@ -333,6 +331,10 @@ public class DataFragment extends Fragment {
         ArrayList<Integer> colors = new ArrayList<Integer>();
         for (int c : ColorTemplate.LIBERTY_COLORS)
             colors.add(c);
+
+        for (int c : ColorTemplate.MATERIAL_COLORS)
+            colors.add(c);
+
         set.setColors(colors);
 
 
