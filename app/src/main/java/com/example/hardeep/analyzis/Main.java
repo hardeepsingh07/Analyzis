@@ -294,7 +294,7 @@ public class Main extends AppCompatActivity
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
-            mWaveLoadingView.setProgressValue((int) values[0]);
+            mWaveLoadingView.setProgressValue(values[0]);
         }
     }
 }

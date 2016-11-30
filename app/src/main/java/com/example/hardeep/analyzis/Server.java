@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-class Server {
+public class Server {
 
     private static Random rand;
     private static int range;
@@ -20,7 +20,7 @@ class Server {
     private static HttpURLConnection conn;
     private static URL urlAddSession, urlAddEvent, urlGetEvents, urlGetSessions, urlDeleteSessions, UrlDeleteEvents;
 
-    Server() throws Exception {
+    public Server() throws Exception {
         urlAddSession = new URL("http://razp1.ddns.net:5000/addSession");
         urlAddEvent = new URL("http://razp1.ddns.net:5000/addEvent");
         urlGetEvents = new URL("http://razp1.ddns.net:5000/getAllEvents");
